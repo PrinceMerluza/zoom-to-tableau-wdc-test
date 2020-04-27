@@ -11,7 +11,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
         var accessToken = Cookies.get('access_token');
         var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
 
-        // initCallback();
+        initCallback();
 
         if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
           if (hasAuth) {
@@ -99,6 +99,7 @@ $(document).ready(function() {
     
     if(queryParams.code){
         getToken(queryParams.code);
+        window.location.href = redirectUri;
     } else {
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
