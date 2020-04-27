@@ -5,6 +5,28 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 (function () {
     var myConnector = tableau.makeConnector();
 
+    myConnector.init = function(initCallback){
+        tableau.authType = tableau.authTypeEnum.custom;
+
+        var accessToken = Cookies.get('accessToken');
+        var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
+
+        initCallback();
+
+        if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
+          if (hasAuth) {
+              tableau.password = accessToken;
+
+              if (tableau.phase == tableau.phaseEnum.authPhase) {
+                // Auto-submit here if we are in the auth phase
+                tableau.submit()
+              }
+
+              return;
+          }
+      }
+    }
+
     myConnector.getSchema = function(schemaCallback){
         var cols = [{
             id: 'id',
@@ -28,12 +50,6 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
     
 
     myConnector.getData = function(table, doneCallback){
-        var token = Cookies.get('access_token');
-        if(!token){
-            throw new Error('No token found');
-        }
-
-
         $.ajax('https://api.zoom.us/v2/users/me/meetings', {
             method: 'GET',
             headers: {
