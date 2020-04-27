@@ -34,7 +34,7 @@ $(document).ready(function() {
     } 
         
     if(queryParams.code){
-        testAPI(queryParams.code);
+        getToken(queryParams.code);
     } else {
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
