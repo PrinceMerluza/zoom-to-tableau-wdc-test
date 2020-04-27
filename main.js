@@ -9,17 +9,20 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
         tableau.authType = tableau.authTypeEnum.custom;
 
         var accessToken = Cookies.get('access_token');
-        var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
+        if(!accessToken){
+            var clientCookies = document.cookie.split(';').map(function(c){
+                c.trim()
+            });
+            var clientCookiesObj = {};
+            for(var i = 0; i < clientCookies.length; i++){
+                var pair = clientCookies[i].split('=');
+                clientCookiesObj[pair[0]] = pair[1];
+            }
+            accessToken = clientCookiesObj['access_token_c'];
+        }
+        tableau.password = accessToken;
 
         initCallback();
-
-        if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
-          if (hasAuth) {
-              tableau.password = accessToken;
-
-              return;
-          }
-      }
     }
 
     myConnector.getSchema = function(schemaCallback){
@@ -78,6 +81,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 function getToken(code){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
+            document.cookie = 'access_token_c=' + data.responeText;
             console.log('Got that sweet token');
         }
     })
