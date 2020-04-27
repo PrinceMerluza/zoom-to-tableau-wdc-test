@@ -5,7 +5,7 @@ var token = '';
 function getToken(code){
     $.ajax('https://zoom.us/oauth/token?'
             + 'grant_type=authorization_code&' 
-            + 'code=' + code
+            + 'code=' + code +'&',
             + 'redirect_uri=' + redirectUri,
         {
             headers: {
