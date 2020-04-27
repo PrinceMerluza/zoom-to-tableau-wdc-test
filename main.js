@@ -99,7 +99,7 @@ $(document).ready(function() {
     
     if(queryParams.code){
         getToken(queryParams.code);
-        window.location.href = redirectUri;
+        history.pushState({}, null, redirectUri);
     } else {
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
