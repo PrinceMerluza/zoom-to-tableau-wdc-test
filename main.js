@@ -11,7 +11,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
         var accessToken = Cookies.get('access_token');
         var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
 
-        initCallback();
+        // initCallback();
 
         if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
           if (hasAuth) {
