@@ -11,6 +11,7 @@ function getToken(code){
             headers: {
                 Authorization: 'Basic M1U5ckQ1VEhTYnVjUkxuNV9XMnluUTpsSzBTYUtGR09vUm5McmpXR1dud2RGTVF4dk1GMENYNg=='
             },
+            method: 'POST',
             complete: function(data){
                 console.log(data);
                 token = data.access_token;
