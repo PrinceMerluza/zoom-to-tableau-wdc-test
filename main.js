@@ -28,13 +28,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
     
 
     myConnector.getData = function(table, doneCallback){
-        var cookies = document.cookie.split(';').map(c => c.trim());
-        var cookiesObj = {};
-        cookies.forEach(function(c){
-            var pair = c.split('=');
-            cookiesObj[pair[0]] = pair[1]; 
-        });
-        var token = cookiesObj.zoom_token;
+        var token = Cookies.get("accessToken");
 
         $.ajax('https://api.zoom.us/v2/users/me/meetings', {
             method: 'GET',
@@ -67,8 +61,6 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 function getToken(code){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
-            token = data.responseText;
-            document.cookie = 'zoom_token=' + token;
             console.log('Got that sweet token: ' + token);
         }
     })
