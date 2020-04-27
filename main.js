@@ -1,6 +1,5 @@
 var redirectUri = "https://princemerluza.github.io/zoom-to-tableau-wdc-test/index.html";
 var clientId = "3U9rD5THSbucRLn5_W2ynQ";
-var token = '';
 
 (function () {
     var myConnector = tableau.makeConnector();
@@ -28,27 +27,30 @@ var token = '';
     
 
     myConnector.getData = function(table, doneCallback){
-        $.ajax('https://api.zoom.us/v2/users/me/meetings', {
-            method: 'GET',
-            headers: {
-                Authorization: 'Bearer ' + token
-            },
-            complete: function(data){
-                var meetings = data.responseJSON.meetings;
-                var tableData = [];
+        var code = getCode();
+        getToken(code, function(token){
+            $.ajax('https://api.zoom.us/v2/users/me/meetings', {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + token
+                },
+                complete: function(data){
+                    var meetings = data.responseJSON.meetings;
+                    var tableData = [];
 
-                // NOTE: Doesn' support paging
-                for(var i = 0; meetings.length; i++){
-                    tableData.push({
-                        id: meetings[i].id,
-                        type: meetings[i].type,
-                        duration: meetings[i].duration,
-                    });
+                    // NOTE: Doesn' support paging
+                    for(var i = 0; meetings.length; i++){
+                        tableData.push({
+                            id: meetings[i].id,
+                            type: meetings[i].type,
+                            duration: meetings[i].duration,
+                        });
+                    }
+
+                    table.appendRows(tableData);
+                    doneCallback();
                 }
-
-                table.appendRows(tableData);
-                doneCallback();
-            }
+            })
         })
     };
 
@@ -56,16 +58,18 @@ var token = '';
 })();
 
 
-function getToken(code){
+function getToken(code, cb){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
-            token = data.responseText;
+            var token = data.responseText;
             console.log('Got that sweet token: ' + token);
+
+            cb(token);
         }
     })
 }
 
-$(document).ready(function() {
+function getCode(){
     // Get Query Parameters
     var queryParamsString = window.location.href.includes('?') ? 
             window.location.href.split("?")[1] : null;
@@ -78,10 +82,12 @@ $(document).ready(function() {
         });
         console.log(queryParams);
     } 
-    
-    if(queryParams.code){
-        getToken(queryParams.code);
-    } else {
+
+    return queryParams.code ? queryParams.code : undefined;
+}
+
+$(document).ready(function() {
+    if(!getCode()){
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
             + "&redirect_uri=" + redirectUri;
