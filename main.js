@@ -1,6 +1,7 @@
 var redirectUri = "https://princemerluza.github.io/zoom-to-tableau-wdc-test/index.html";
 var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 
+
 (function () {
     var myConnector = tableau.makeConnector();
 
@@ -27,30 +28,35 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
     
 
     myConnector.getData = function(table, doneCallback){
-        var code = getCode();
-        getToken(code, function(token){
-            $.ajax('https://api.zoom.us/v2/users/me/meetings', {
-                method: 'GET',
-                headers: {
-                    Authorization: 'Bearer ' + token
-                },
-                complete: function(data){
-                    var meetings = data.responseJSON.meetings;
-                    var tableData = [];
+        var cookies = document.cookie.split(';').map(c => c.trim());
+        var cookiesObj = {};
+        cookies.forEach(function(c){
+            var pair = c.split('=');
+            cookiesObj[pair[0]] = pair[1]; 
+        });
+        var token = cookiesObj.zoom_token;
 
-                    // NOTE: Doesn' support paging
-                    for(var i = 0; meetings.length; i++){
-                        tableData.push({
-                            id: meetings[i].id,
-                            type: meetings[i].type,
-                            duration: meetings[i].duration,
-                        });
-                    }
+        $.ajax('https://api.zoom.us/v2/users/me/meetings', {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + token
+            },
+            complete: function(data){
+                var meetings = data.responseJSON.meetings;
+                var tableData = [];
 
-                    table.appendRows(tableData);
-                    doneCallback();
+                // NOTE: Doesn' support paging
+                for(var i = 0; meetings.length; i++){
+                    tableData.push({
+                        id: meetings[i].id,
+                        type: meetings[i].type,
+                        duration: meetings[i].duration,
+                    });
                 }
-            })
+
+                table.appendRows(tableData);
+                doneCallback();
+            }
         })
     };
 
@@ -58,18 +64,17 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 })();
 
 
-function getToken(code, cb){
+function getToken(code){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
-            var token = data.responseText;
+            token = data.responseText;
+            document.cookie = 'zoom_token=' + token;
             console.log('Got that sweet token: ' + token);
-
-            cb(token);
         }
     })
 }
 
-function getCode(){
+$(document).ready(function() {
     // Get Query Parameters
     var queryParamsString = window.location.href.includes('?') ? 
             window.location.href.split("?")[1] : null;
@@ -82,12 +87,10 @@ function getCode(){
         });
         console.log(queryParams);
     } 
-
-    return queryParams.code ? queryParams.code : undefined;
-}
-
-$(document).ready(function() {
-    if(!getCode()){
+    
+    if(queryParams.code){
+        getToken(queryParams.code);
+    } else {
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
             + "&redirect_uri=" + redirectUri;
