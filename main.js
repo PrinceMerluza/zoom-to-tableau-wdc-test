@@ -17,11 +17,6 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
           if (hasAuth) {
               tableau.password = accessToken;
 
-              if (tableau.phase == tableau.phaseEnum.authPhase) {
-                // Auto-submit here if we are in the auth phase
-                tableau.submit()
-              }
-
               return;
           }
       }
