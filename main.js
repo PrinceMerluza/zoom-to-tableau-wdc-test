@@ -2,6 +2,14 @@ var redirectUri = "https://princemerluza.github.io/zoom-to-tableau-wdc-test/inde
 var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 var token = '';
 
+function getToken(code){
+    $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
+        complete: function(data){
+            console.log(data);
+        }
+    })
+}
+
 $(document).ready(function() {
     // Get Query Parameters
     var queryParamsString = window.location.href.includes('?') ? 
@@ -17,8 +25,7 @@ $(document).ready(function() {
     } 
         
     if(queryParams.code){
-        console.log(queryParams.code)
-        // getToken(queryParams.code);
+        getToken(queryParams.code);
     } else {
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
