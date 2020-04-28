@@ -78,15 +78,21 @@ function getToken(code){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
             console.log(data);
-            // Cookies.set('access_token', JSON.parse(data.responseText));
-            console.log('Got that sweet token');
-            document.getElementById('auth-ready').innerText = 'Now Click It.';
+            Cookies.set('access_token', JSON.parse(data.responseText));
+            window.location.href = redirectUri;
         }
     })
 }
 
 $(document).ready(function() {
-    console.log(Cookies.get('access_token'));
+    var token = Cookies.get('access_token');
+    if(token){
+        document.getElementById('btn-submit').style.display = '';
+        document.getElementById('btn-auth').style.display = 'none';
+    }else{
+        document.getElementById('btn-submit').style.display = 'none';
+        document.getElementById('btn-auth').style.display = '';
+    }
 
     // Get Query Parameters
     var queryParamsString = window.location.href.includes('?') ? 
