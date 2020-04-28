@@ -74,13 +74,12 @@ function getToken(code){
             console.log(data);
             Cookies.set('access_token', JSON.parse(data.responseText));
             console.log('Got that sweet token');
-            document.getElementById('auth-ready').style.display = '';
+            document.getElementById('auth-ready').innerText = 'Now Click It.';
         }
     })
 }
 
 $(document).ready(function() {
-    document.getElementById('auth-ready').style.display = 'none';
     console.log(Cookies.get('access_token'));
 
     // Get Query Parameters
