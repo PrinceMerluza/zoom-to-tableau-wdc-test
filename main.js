@@ -6,12 +6,19 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
     var myConnector = tableau.makeConnector();
 
     myConnector.init = function(initCallback){
-        tableau.authType = tableau.authTypeEnum.custom;
+        var accessToken = Cookies.get("access_token");
+        console.log("Access token is '" + accessToken + "'");
+        var hasAuth = (accessToken && accessToken.length > 0) || tableau.password.length > 0;
 
-        var accessToken = Cookies.get('access_token');
-        tableau.password = accessToken ? accessToken : 'none';
-        
-        initCallback();        
+        initCallback();
+
+        // If we are not in the data gathering phase, we want to store the token
+        // This allows us to access the token in the data gathering phase
+        if (tableau.phase == tableau.phaseEnum.interactivePhase || tableau.phase == tableau.phaseEnum.authPhase) {
+            if (hasAuth) {
+                tableau.password = accessToken;
+            }
+        }     
     }
 
     myConnector.getSchema = function(schemaCallback){
@@ -38,8 +45,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 
     myConnector.getData = function(table, doneCallback){
         var token = tableau.password;
-        throw new Error(token);
-        
+
         $.ajax('https://api.zoom.us/v2/users/me/meetings', {
             method: 'GET',
             headers: {
@@ -72,7 +78,7 @@ function getToken(code){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
             console.log(data);
-            Cookies.set('access_token', JSON.parse(data.responseText));
+            // Cookies.set('access_token', JSON.parse(data.responseText));
             console.log('Got that sweet token');
             document.getElementById('auth-ready').innerText = 'Now Click It.';
         }
