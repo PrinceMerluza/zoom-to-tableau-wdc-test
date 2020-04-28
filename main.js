@@ -44,7 +44,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
             headers: {
                 Authorization: 'Bearer ' + token
             },
-            complete: function(data){
+            complete: function(data, status){
                 var meetings = data.responseJSON.meetings;
                 var tableData = [];
 
@@ -59,6 +59,9 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 
                 table.appendRows(tableData);
                 doneCallback();
+            },
+            error: function(data){
+                throw new Error(data);
             }
         })
     };
