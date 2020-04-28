@@ -9,10 +9,9 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
         tableau.authType = tableau.authTypeEnum.custom;
 
         var accessToken = Cookies.get('access_token');
-
-        initCallback();
-
         tableau.password = accessToken ? accessToken : 'none';
+        
+        initCallback();        
     }
 
     myConnector.getSchema = function(schemaCallback){
