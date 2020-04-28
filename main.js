@@ -97,14 +97,16 @@ $(document).ready(function() {
     if(queryParams.code){
         getToken(queryParams.code);
         history.pushState({}, null, redirectUri);
-    } else {
+    }
+
+    $("#btn-submit").click(function () {
+        tableau.connectionName = "Zoom Connection";
+        tableau.submit();
+    });
+
+    $("#btn-auth").click(function () {
         window.location.href = "https://zoom.us/oauth/authorize?response_type=code&"
             + "client_id=" + clientId
             + "&redirect_uri=" + redirectUri;
-    }
-
-    $("#submitButton").click(function () {
-        tableau.connectionName = "Zoom Connection";
-        tableau.submit();
     });
 });
