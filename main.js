@@ -38,6 +38,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 
     myConnector.getData = function(table, doneCallback){
         var token = tableau.password;
+        throw new Error(token);
         
         $.ajax('https://api.zoom.us/v2/users/me/meetings', {
             method: 'GET',
@@ -59,9 +60,6 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 
                 table.appendRows(tableData);
                 doneCallback();
-            },
-            error: function(data){
-                throw new Error(data);
             }
         })
     };
