@@ -9,9 +9,10 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
         tableau.authType = tableau.authTypeEnum.custom;
 
         var accessToken = Cookies.get('access_token');
-        tableau.password = accessToken;
 
         initCallback();
+
+        tableau.password = accessToken;
     }
 
     myConnector.getSchema = function(schemaCallback){
@@ -70,7 +71,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 function getToken(code){
     $.ajax('https://ri64kb0pda.execute-api.ap-southeast-1.amazonaws.com/getZoomAPIToken?code=' + code, {
         complete: function(data){
-            Cookies.set('access_token', data.responseText);
+            Cookies.set('access_token', data.responseJSON.token);
             console.log('Got that sweet token');
         }
     })
