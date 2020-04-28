@@ -97,11 +97,11 @@ $(document).ready(function() {
             queryParams[pair[0]] = pair[1];
         });
         console.log(queryParams);
-    } 
+    }
 
     // Change buttons and display
     var token = Cookies.get('access_token');
-    document.getElementById('oauth-loading').style.display = 'none';
+    document.getElementById('auth-loading').style.display = 'none';
     if(token){
         document.getElementById('btn-submit').style.display = '';
         document.getElementById('btn-auth').style.display = 'none';
@@ -112,7 +112,7 @@ $(document).ready(function() {
 
     // If code was available show only the PLease Wait
     if(queryParams.code){
-        document.getElementById('oauth-loading').style.display = '';
+        document.getElementById('auth-loading').style.display = '';
         document.getElementById('btn-auth').style.display = 'none';
         document.getElementById('btn-submit').style.display = 'none';
 
