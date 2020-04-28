@@ -86,15 +86,6 @@ function getToken(code){
 }
 
 $(document).ready(function() {
-    var token = Cookies.get('access_token');
-    if(token){
-        document.getElementById('btn-submit').style.display = '';
-        document.getElementById('btn-auth').style.display = 'none';
-    }else{
-        document.getElementById('btn-submit').style.display = 'none';
-        document.getElementById('btn-auth').style.display = '';
-    }
-
     // Get Query Parameters
     var queryParamsString = window.location.href.includes('?') ? 
             window.location.href.split("?")[1] : null;
@@ -107,12 +98,29 @@ $(document).ready(function() {
         });
         console.log(queryParams);
     } 
-    
+
+    // Change buttons and display
+    var token = Cookies.get('access_token');
+    document.getElementById('oauth-loading').style.display = 'none';
+    if(token){
+        document.getElementById('btn-submit').style.display = '';
+        document.getElementById('btn-auth').style.display = 'none';
+    }else{
+        document.getElementById('btn-submit').style.display = 'none';
+        document.getElementById('btn-auth').style.display = '';
+    }
+
+    // If code was available show only the PLease Wait
     if(queryParams.code){
+        document.getElementById('oauth-loading').style.display = '';
+        document.getElementById('btn-auth').style.display = 'none';
+        document.getElementById('btn-submit').style.display = 'none';
+
         getToken(queryParams.code);
         history.pushState({}, null, redirectUri);
     }
-
+    
+    // Button Event listeners
     $("#btn-submit").click(function () {
         tableau.connectionName = "Zoom Connection";
         tableau.submit();
