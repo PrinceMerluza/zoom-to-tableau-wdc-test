@@ -26,6 +26,9 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
             id: 'id',
             dataType: tableau.dataTypeEnum.string
         }, {
+            id: 'topic',
+            dataType: tableau.dataTypeEnum.string
+        }, {
             id: 'type',
             dataType: tableau.dataTypeEnum.int
         }, {
@@ -53,9 +56,10 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
                 var tableData = [];
 
                 // NOTE: Doesn' support paging
-                for(var i = 0; meetings.length; i++){
+                for(var i = 0; i < meetings.length; i++){
                     tableData.push({
-                        id: meetings[i].id,
+                        id: meetings[i].id.toString(),
+                        topic: meetings[i].topic,
                         type: meetings[i].type,
                         duration: meetings[i].duration,
                     });
