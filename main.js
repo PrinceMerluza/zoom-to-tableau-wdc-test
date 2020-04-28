@@ -12,7 +12,7 @@ var clientId = "3U9rD5THSbucRLn5_W2ynQ";
 
         initCallback();
 
-        tableau.password = accessToken;
+        tableau.password = accessToken ? accessToken : 'none';
     }
 
     myConnector.getSchema = function(schemaCallback){
